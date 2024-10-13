@@ -39,3 +39,22 @@ services:
       - .:/usr/src/app
       - /usr/src/app/node_modules
     command: bun run start:dev:api
+  
+  db:
+    image: postgres
+    restart: always
+    env_file:
+      - './env/.env.local'
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
+
+  postgres_admin:
+    image: dpage/pgadmin4
+    depends_on:
+      - postgres
+    env_file:
+      - './env/.env.local'
+    ports:
+      - '15432:80'
