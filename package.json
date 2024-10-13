@@ -1,0 +1,50 @@
+{
+  "name": "game-launcher-api",
+  "version": "0.0.1",
+  "description": "",
+  "author": "",
+  "private": true,
+  "license": "UNLICENSED",
+  "scripts": {
+    "start:dev": "bun start:dev:auth && bun start:dev:api",
+    "start:dev:api": "NODE_ENV=local bun --watch ./apps/api/src/main.ts",
+    "start:dev:auth": "NODE_ENV=local bun --watch ./apps/auth/src/main.ts",
+    "start:prod": "bun ./apps/api/src/main.ts",
+    "test": "NODE_ENV=test bun test",
+    "test:debug": "NODE_ENV=test bun test --inspect --break",
+    "lint": "biome check .",
+    "lint:fix": "biome check --write ."
+  },
+  "dependencies": {
+    "@nestjs/common": "^10.3.2",
+    "@nestjs/config": "^3.2.3",
+    "@nestjs/core": "^10.3.2",
+    "@nestjs/microservices": "^10.4.4",
+    "@nestjs/platform-express": "^10.4.4",
+    "@nestjs/swagger": "^7.4.2",
+    "amqp-connection-manager": "^4.1.14",
+    "amqplib": "^0.10.4",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "reflect-metadata": "^0.2.1",
+    "rxjs": "^7.8.1"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.3",
+    "@nestjs/cli": "^10.4.5",
+    "@nestjs/schematics": "^10.1.4",
+    "@nestjs/testing": "^10.4.4",
+    "@swc/cli": "^0.3.9",
+    "@swc/core": "^1.4.0",
+    "@types/express": "^5.0.0",
+    "@types/node": "^20.11.16",
+    "@types/supertest": "^6.0.0",
+    "source-map-support": "^0.5.21",
+    "supertest": "^7.0.0",
+    "ts-loader": "^9.4.3",
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.3.3",
+    "@types/bun": "latest"
+  }
+}
