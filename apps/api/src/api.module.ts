@@ -1,4 +1,4 @@
-import { ApiGatewayInitializerModule } from '@app/shared';
+import { ApiGatewayInitializerModule } from '@app/nestjs-microservices-tools';
 import { Module } from '@nestjs/common';
 import { ApiController } from './api.controller';
 

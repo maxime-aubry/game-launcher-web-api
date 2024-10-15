@@ -28,13 +28,13 @@
         "tsConfigPath": "apps/auth/tsconfig.app.json"
       }
     },
-    "shared": {
+    "nestjs-microservices-tools": {
       "type": "library",
-      "root": "libs/shared",
+      "root": "libs/nestjs-microservices-tools",
       "entryFile": "index",
-      "sourceRoot": "libs/shared/src",
+      "sourceRoot": "libs/nestjs-microservices-tools/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/shared/tsconfig.lib.json"
+        "tsConfigPath": "libs/nestjs-microservices-tools/tsconfig.lib.json"
       }
     }
   }

@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "push:prisma": "dotenv -e ./env/.env.local -- bun prisma db push --schema ./libs/shared/src/database/prisma/schema.prisma",
+    "push:prisma": "dotenv -e ./env/.env.local -- bun prisma db push --schema ./libs/nestjs-microservices-tools/src/database/prisma/schema.prisma",
     "seed:prisma": "dotenv -e ./env/.env.local -- bun prisma db seed",
     "start:dev": "bun start:dev:auth && bun start:dev:api",
     "start:dev:api": "NODE_ENV=local bun --watch ./apps/api/src/main.ts",
@@ -52,6 +52,6 @@
     "@types/bun": "latest"
   },
   "prisma": {
-    "seed": "ts-node --transpile-only libs/shared/src/database/prisma/seed.ts"
+    "seed": "ts-node --transpile-only libs/nestjs-microservices-tools/src/database/prisma/seed.ts"
   }
 }
