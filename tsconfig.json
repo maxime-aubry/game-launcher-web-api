@@ -19,7 +19,9 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@app/nestjs-microservices-tools": ["libs/nestjs-microservices-tools/src"],
-      "@app/nestjs-microservices-tools/*": ["libs/nestjs-microservices-tools/src/*"]
+      "@app/nestjs-microservices-tools/*": ["libs/nestjs-microservices-tools/src/*"],
+      "@app/common": ["libs/common/src"],
+      "@app/common/*": ["libs/common/src/*"]
     }
   }
 }
