@@ -1,13 +1,11 @@
 import {
   EnvironmentConfigModule,
-  MessageQueueModule,
   MicroserviceInitializerModule,
 } from '@app/nestjs-microservices-tools';
 import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
+import { AuthControllersModule } from './presentation/auth-controllers.module';
 
 @Module({
-  imports: [EnvironmentConfigModule, MicroserviceInitializerModule, MessageQueueModule],
-  controllers: [AuthController],
+  imports: [EnvironmentConfigModule, AuthControllersModule, MicroserviceInitializerModule],
 })
 export class AuthModule {}

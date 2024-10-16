@@ -1,11 +1,9 @@
 import type { IBaseUserRepository } from '@app/common/interfaces/database/repositories/base-user-repository.interface';
-import { Inject, Injectable } from '@nestjs/common';
 import type { Prisma, User } from '@prisma/client';
 import type { PrismaService } from '../../../../nestjs-microservices-tools/src/database/prisma.service';
 
-@Injectable()
 export class BaseUserRepository implements IBaseUserRepository {
-  constructor(@Inject() protected readonly prisma: PrismaService) {}
+  constructor(protected readonly prisma: PrismaService) {}
 
   public async findAllAsync(): Promise<User[]> {
     const users: User[] = await this.prisma.user.findMany();

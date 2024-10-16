@@ -1,10 +1,15 @@
 import { BaseUserRepository } from '@app/common/database/repositories/base-user-repository.service';
-import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@app/nestjs-microservices-tools/database/prisma.service';
+import { Inject, Injectable } from '@nestjs/common';
 import type { User } from '@prisma/client';
 import type { IAuthUserRepository } from '../../interfaces/database/repositories/user-repository.interface';
 
 @Injectable()
 export class AuthUserRepository extends BaseUserRepository implements IAuthUserRepository {
+  constructor(@Inject(PrismaService) protected readonly prisma: PrismaService) {
+    super(prisma);
+  }
+
   public async findByEmailAsync(email: string): Promise<User | undefined> {
     const user: User | undefined = await this.prisma.user.findUnique({
       where: {

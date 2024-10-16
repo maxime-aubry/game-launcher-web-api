@@ -4,12 +4,12 @@ import { Controller, Inject } from '@nestjs/common';
 import { Ctx, MessagePattern, type RmqContext } from '@nestjs/microservices';
 
 @Controller()
-export class AuthController {
+export class LocalAuthController {
   constructor(@Inject(MessageQueueService) private readonly messageQueueService: IMessageQueueService) {}
 
   @MessagePattern({ cmd: 'get-user' })
   public getUser(@Ctx() context: RmqContext): string {
     this.messageQueueService.acknowledgeMessage(context);
-    return 'test';
+    return 'test1';
   }
 }
