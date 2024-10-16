@@ -1,11 +1,14 @@
 {
-  "name": "game-launcher-api",
+  "name": "game-launcher-web-api",
   "version": "0.0.1",
   "description": "",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "prisma:generate": "dotenv -e ./env/.env.local -- bun prisma generate --schema ./libs/common/src/database/prisma/schema.prisma",
+    "prisma:push": "dotenv -e ./env/.env.local -- bun prisma db push --schema ./libs/common/src/database/prisma/schema.prisma",
+    "prisma:seed": "dotenv -e ./env/.env.local -- bun prisma db seed",
     "start:dev": "bun start:dev:auth && bun start:dev:api",
     "start:dev:api": "NODE_ENV=local bun --watch ./apps/api/src/main.ts",
     "start:dev:auth": "NODE_ENV=local bun --watch ./apps/auth/src/main.ts",
@@ -22,10 +25,12 @@
     "@nestjs/microservices": "^10.4.4",
     "@nestjs/platform-express": "^10.4.4",
     "@nestjs/swagger": "^7.4.2",
+    "@prisma/client": "^5.20.0",
     "amqp-connection-manager": "^4.1.14",
     "amqplib": "^0.10.4",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "prisma": "^5.20.0",
     "reflect-metadata": "^0.2.1",
     "rxjs": "^7.8.1"
   },
@@ -46,5 +51,8 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.3.3",
     "@types/bun": "latest"
+  },
+  "prisma": {
+    "seed": "ts-node --transpile-only libs/common/src/database/prisma/seed.ts"
   }
 }

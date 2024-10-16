@@ -18,8 +18,10 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@app/shared": ["libs/shared/src"],
-      "@app/shared/*": ["libs/shared/src/*"]
+      "@app/nestjs-microservices-tools": ["libs/nestjs-microservices-tools/src"],
+      "@app/nestjs-microservices-tools/*": ["libs/nestjs-microservices-tools/src/*"],
+      "@app/common": ["libs/common/src"],
+      "@app/common/*": ["libs/common/src/*"]
     }
   }
 }

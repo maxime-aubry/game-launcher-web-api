@@ -1,7 +1,7 @@
-import { EnvironmentConfigService } from '@app/shared/config/environment-config/environment-config.service';
-import { MicroserviceInitializerService } from '@app/shared/config/microservice-initializer/microservice-initializer.service';
-import type { IMessageQueueConfiguration } from '@app/shared/interfaces/config/environment-config/message-queue-config.service.interface';
-import type { IMicroserviceInitializerService } from '@app/shared/interfaces/config/microservice-initializer/microservice-initializer.service.interface';
+import { EnvironmentConfigService } from '@app/nestjs-microservices-tools/config/environment-config/environment-config.service';
+import { MicroserviceInitializerService } from '@app/nestjs-microservices-tools/config/microservice-initializer/microservice-initializer.service';
+import type { IMessageQueueConfiguration } from '@app/nestjs-microservices-tools/interfaces/config/environment-config/message-queue-config.service.interface';
+import type { IMicroserviceInitializerService } from '@app/nestjs-microservices-tools/interfaces/config/microservice-initializer/microservice-initializer.service.interface';
 import type { INestApplication } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AuthModule } from './auth.module';

@@ -1,7 +1,7 @@
 services:
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: rabbitmq
+    container_name: game-launcher-rabbitmq
     hostname: rabbitmq
     volumes:
       - /var/lib/rabbitmq
@@ -12,6 +12,7 @@ services:
       - './env/.env.local'
   
   auth:
+    container_name: auth
     build:
       context: ./
       dockerfile: ./apps/auth/Dockerfile
@@ -19,12 +20,14 @@ services:
       - './env/.env.local'
     depends_on:
       - rabbitmq
+      - postgres
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
     command: bun run start:dev:auth
   
   api:
+    container_name: game-launcher-api
     build:
       context: ./
       dockerfile: ./apps/api/Dockerfile
@@ -39,3 +42,24 @@ services:
       - .:/usr/src/app
       - /usr/src/app/node_modules
     command: bun run start:dev:api
+  
+  postgres:
+    image: postgres
+    container_name: game-launcher-postgres
+    restart: always
+    env_file:
+      - './env/.env.local'
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
+
+  postgres_admin:
+    container_name: game-launcher-pgadmin4
+    image: dpage/pgadmin4
+    depends_on:
+      - postgres
+    env_file:
+      - './env/.env.local'
+    ports:
+      - '15432:80'

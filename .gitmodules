@@ -1,3 +1,3 @@
-[submodule "libs/shared"]
-	path = libs/shared
-	url = https://github.com/maxime-aubry/nestjs-microservices-tools
+[submodule "libs/nestjs-microservices-tools"]
+	path = libs/nestjs-microservices-tools
+	url = https://github.com/maxime-aubry/nestjs-microservices-tools.git
