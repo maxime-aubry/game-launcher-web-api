@@ -1,8 +1,8 @@
-import { BaseUserRepository } from '@app/common/database/repositories/base-user-repository.service';
-import { PrismaService } from '@app/nestjs-microservices-tools/database/prisma.service';
+import type { UserEntity } from '@app/common/domain/entities';
+import { BaseUserRepository } from '@app/common/infrastructure/database';
+import { PrismaService } from '@app/nestjs-microservices-tools/database';
 import { Inject, Injectable } from '@nestjs/common';
-import type { User } from '@prisma/client';
-import type { IAuthUserRepository } from '../../interfaces/database/repositories/user-repository.interface';
+import type { IAuthUserRepository } from './user-repository.interface';
 
 @Injectable()
 export class AuthUserRepository extends BaseUserRepository implements IAuthUserRepository {
@@ -10,8 +10,8 @@ export class AuthUserRepository extends BaseUserRepository implements IAuthUserR
     super(prisma);
   }
 
-  public async findByEmailAsync(email: string): Promise<User | undefined> {
-    const user: User | undefined = await this.prisma.user.findUnique({
+  public async findByEmailAsync(email: string): Promise<UserEntity | null> {
+    const user: UserEntity | null = await this.prisma.user.findUnique({
       where: {
         email,
       },
@@ -19,17 +19,24 @@ export class AuthUserRepository extends BaseUserRepository implements IAuthUserR
     return user;
   }
 
-  public async findByUsernameAsync(username: string): Promise<User | undefined> {
-    const user: User | undefined = await this.prisma.user.findUnique({
+  public async findByEmailOrUsernameAsync(emailOrUsername: string): Promise<UserEntity | null> {
+    const user: UserEntity | null = await this.prisma.user.findFirst({
       where: {
-        username,
+        OR: [
+          {
+            email: emailOrUsername,
+          },
+          {
+            username: emailOrUsername,
+          },
+        ],
       },
     });
     return user;
   }
 
-  public async updateLastLogin(id: string): Promise<User> {
-    const user: User = await this.prisma.user.update({
+  public async updateLastLogin(id: string): Promise<UserEntity> {
+    const user: UserEntity = await this.prisma.user.update({
       where: {
         id,
       },
@@ -40,8 +47,8 @@ export class AuthUserRepository extends BaseUserRepository implements IAuthUserR
     return user;
   }
 
-  public async updateRefreshTokenAsync(id: string, hashRefreshToken: string): Promise<User> {
-    const user: User = await this.prisma.user.update({
+  public async updateRefreshTokenAsync(id: string, hashRefreshToken: string): Promise<UserEntity> {
+    const user: UserEntity = await this.prisma.user.update({
       where: {
         id,
       },

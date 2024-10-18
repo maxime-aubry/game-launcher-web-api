@@ -1,9 +1,8 @@
-import type { IMessageQueueService } from '@app/nestjs-microservices-tools/interfaces/services/messageQueue/message-queue.service.interface';
-import { MessageQueueService } from '@app/nestjs-microservices-tools/services/message-queue/message-queue.service';
+import { type IMessageQueueService, MessageQueueService } from '@app/nestjs-microservices-tools/services/message-queue';
 import { Controller, Inject } from '@nestjs/common';
 import { Ctx, MessagePattern, type RmqContext } from '@nestjs/microservices';
 
-@Controller()
+@Controller('local-auth')
 export class LocalAuthController {
   constructor(@Inject(MessageQueueService) private readonly messageQueueService: IMessageQueueService) {}
 

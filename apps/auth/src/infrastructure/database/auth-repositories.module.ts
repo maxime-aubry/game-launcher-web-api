@@ -1,4 +1,4 @@
-import { DatabaseModule } from '@app/nestjs-microservices-tools/database/database.module';
+import { DatabaseModule } from '@app/nestjs-microservices-tools/database';
 import { Module } from '@nestjs/common';
 import { AuthUserRepository } from './repositories/user-repository.service';
 

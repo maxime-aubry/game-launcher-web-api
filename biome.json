@@ -7,6 +7,9 @@
     "enabled": true,
     "useIgnoreFile": true
   },
+  "files": {
+    "ignore": ["db/"]
+  },
   "formatter": {
     "enabled": true,
     "formatWithErrors": false,
@@ -36,7 +39,7 @@
       "performance": { "noBarrelFile": "error", "noReExportAll": "error" },
       "style": {
         "noNamespace": "error",
-        "noNamespaceImport": "warn",
+        "noNamespaceImport": "off",
         "noNegationElse": "error",
         "noParameterProperties": "off",
         "useBlockStatements": "off",
