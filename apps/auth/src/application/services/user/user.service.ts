@@ -1,50 +1,66 @@
-import { CreateUserEntity, UserEntity } from '@app/common/domain/entities';
+import { type CreateUserEntity, UserEntity } from '@app/common/domain/entities';
+import { JwtPayload, JwtService, type TokensBundle } from '@app/nestjs-microservices-tools/services/jwt';
 import type { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
-import { Inject, Injectable } from '@nestjs/common';
-import { CreateUserModel, UserModel } from 'apps/auth/src/domain/models';
+import { ForbiddenException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import { type CreateUserModel, CreatedUserModel, UserModel } from 'apps/auth/src/domain/models';
 import { AuthUserRepository, type IAuthUserRepository } from 'apps/auth/src/infrastructure/database';
-import { ExistingUserDto, type SignUpWithLocalCredentialsDto } from '../../dtos/local-auth';
-import { UserServiceException } from '../../exceptions';
-import { type IUserModelInitializer, UserModelWithLocalCredentialsInitializer } from '../user-initializer';
 import type { IUserService } from './user.interface';
 
 @Injectable()
 export class UserService implements IUserService {
   constructor(
-    @Inject(AuthUserRepository) private readonly authUserRepository: IAuthUserRepository,
-    @Inject(UserModelWithLocalCredentialsInitializer)
-    private readonly userModelWithLocalCredentialsInitializer: IUserModelInitializer<
-      SignUpWithLocalCredentialsDto,
-      CreateUserModel
-    >,
+    @Inject(AuthUserRepository) private readonly userRepository: IAuthUserRepository,
+    @Inject(JwtService) private readonly jwtService: JwtService,
     @InjectMapper() private readonly authMapper: Mapper,
   ) {}
 
-  public async checkInexistingUserAsync(email: string): Promise<void> {
-    const existingUserEntity: UserEntity | null = await this.authUserRepository.findByEmailAsync(email);
-    if (existingUserEntity) throw new UserServiceException(`User with email "${email}" already exists.`);
+  public async checkInexistingUserWithEmailAsync(email: string): Promise<void> {
+    const existingUserEntity: UserEntity | null = await this.userRepository.findByEmailAsync(email);
+    if (existingUserEntity) throw new ForbiddenException(`Access Denied. User with email "${email}" already exists.`);
   }
 
-  public async findByEmailOrUsernameAsync(emailOrUsername: string): Promise<UserModel> {
-    const existingUserEntity: UserEntity | null =
-      await this.authUserRepository.findByEmailOrUsernameAsync(emailOrUsername);
-    if (!existingUserEntity)
-      throw new UserServiceException(`User with email or username "${emailOrUsername}" does not exist.`);
+  public async findByIdAsync(id: string): Promise<UserModel> {
+    const existingUserEntity: UserEntity | null = await this.userRepository.findByIdAsync(id);
+    if (!existingUserEntity) throw new ForbiddenException(`Access Denied. User with ID "${id}" does not exist.`);
+    if (!existingUserEntity.hashRefreshToken) throw new ForbiddenException(`Access Denied. User with ID "${id}" does not have refresh token.`);
     const existingUserModel: UserModel = this.authMapper.map(existingUserEntity, UserEntity, UserModel);
     return existingUserModel;
   }
 
-  public async createUserWithLocalCredentialsAsync(dto: SignUpWithLocalCredentialsDto): Promise<UserModel> {
-    const createUserModel: CreateUserModel = await this.userModelWithLocalCredentialsInitializer.initializeAsync(dto);
-    const createUserEntity: CreateUserEntity = this.authMapper.map(createUserModel, CreateUserModel, CreateUserEntity);
-    const createdUserEntity: UserEntity = await this.authUserRepository.createAsync(createUserEntity);
-    const createdUserModel: UserModel = this.authMapper.map(createdUserEntity, UserEntity, UserModel);
+  public async findByEmailAsync(email: string): Promise<UserModel> {
+    const existingUserEntity: UserEntity | null = await this.userRepository.findByEmailAsync(email);
+    if (!existingUserEntity) throw new ForbiddenException(`Access Denied. User with email "${email}" does not exist.`);
+    const existingUserModel: UserModel = this.authMapper.map(existingUserEntity, UserEntity, UserModel);
+    return existingUserModel;
+  }
+
+  public async createUserWithLocalCredentialsAsync(user: CreateUserModel): Promise<CreatedUserModel> {
+    const createUserEntity: CreateUserEntity = user.toCreateUserEntity();
+    const createdUserEntity: UserEntity = await this.userRepository.createAsync(createUserEntity);
+    const createdUserModel: CreatedUserModel = this.authMapper.map(createdUserEntity, UserEntity, CreatedUserModel);
     return createdUserModel;
   }
 
-  public getExistingUser(existingUser: UserModel): ExistingUserDto {
-    const existingUserDto: ExistingUserDto = this.authMapper.map(existingUser, UserModel, ExistingUserDto);
-    return existingUserDto;
+  public async actualizeRefreshToken(existingUser: UserModel, refreshToken: string): Promise<TokensBundle> {
+    await this.verifyRefreshToken(refreshToken);
+    const tokensBundle: TokensBundle = await this.authenticateUser(existingUser);
+    return tokensBundle;
+  }
+
+  private async verifyRefreshToken(refreshToken: string): Promise<void> {
+    try {
+      await this.jwtService.checkRefreshTokenAsync(refreshToken);
+    } catch {
+      throw new UnauthorizedException('Access Denied. Refresh Token is not valid.');
+    }
+  }
+
+  public async authenticateUser(existingUser: UserModel): Promise<TokensBundle> {
+    const payload: JwtPayload = new JwtPayload(existingUser.id, existingUser.email);
+    const tokensAndCookies: TokensBundle = this.jwtService.getTokensBundle(payload);
+    await this.userRepository.updateRefreshTokenAsync(existingUser.id, tokensAndCookies.refreshToken);
+    await this.userRepository.updateLastLogin(existingUser.id);
+    return tokensAndCookies;
   }
 }

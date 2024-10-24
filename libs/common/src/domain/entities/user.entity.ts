@@ -5,12 +5,12 @@ import type { JsonValue } from '@prisma/client/runtime/library';
 export class UserEntity implements User {
   constructor(
     id: string,
-    firstname: string,
-    lastname: string,
+    firstname: null,
+    lastname: string | null,
     email: string,
-    username: string,
-    lastLogin: Date,
-    hashRefreshToken: string,
+    username: string | null,
+    lastLogin: Date | null,
+    hashRefreshToken: string | null,
     credentials: JsonValue,
     createdAt: Date,
     updatedAt: Date,
@@ -31,22 +31,20 @@ export class UserEntity implements User {
   id: string;
 
   @AutoMap()
-  firstname: string;
+  firstname: string | null;
 
   @AutoMap()
-  lastname: string;
-
-  @AutoMap()
+  lastname: string | null;
   email: string;
 
   @AutoMap()
-  username: string;
+  username: string | null;
 
   @AutoMap()
-  lastLogin: Date;
+  lastLogin: Date | null;
 
   @AutoMap()
-  hashRefreshToken: string;
+  hashRefreshToken: string | null;
 
   @AutoMap()
   credentials: JsonValue;

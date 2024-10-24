@@ -16,12 +16,12 @@ datasource db {
 
 model User {
   id   String @id @default(uuid())
-  firstname String
-  lastname String
+  firstname String?
+  lastname String?
   email String @unique
-  username String @unique
-  lastLogin DateTime
-  hashRefreshToken String
+  username String? @unique
+  lastLogin DateTime?
+  hashRefreshToken String?
   credentials Json
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

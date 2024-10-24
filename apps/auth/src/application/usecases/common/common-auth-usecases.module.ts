@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
-import { SignOutUseCase } from './sign-out/sign-out-usecase';
+import { SignOutUseCase } from './sign-out';
 
 @Module({
-  providers: [SignOutUseCase],
   exports: [SignOutUseCase],
 })
 export class CommonAuthUseCasesModule {}

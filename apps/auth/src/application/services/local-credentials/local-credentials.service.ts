@@ -1,6 +1,5 @@
 import { HashService, type IHashService } from '@app/nestjs-microservices-tools/services/hash';
-import { Inject } from '@nestjs/common';
-import { LocalCredentialsException } from '../../exceptions';
+import { BadRequestException, Inject } from '@nestjs/common';
 import type { ILocalCredentialsService } from './local-credentials.interface';
 
 export class LocalCredentialsService implements ILocalCredentialsService {
@@ -12,6 +11,6 @@ export class LocalCredentialsService implements ILocalCredentialsService {
 
   public async checkCredentialsAsync(hashedPassword: string, clearedPassword: string): Promise<void> {
     const doesPasswordMatch: boolean = await this.hashService.compareAsync(clearedPassword, hashedPassword);
-    if (!doesPasswordMatch) throw new LocalCredentialsException('Invalid password.');
+    if (!doesPasswordMatch) throw new BadRequestException('Invalid password.');
   }
 }

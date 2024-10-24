@@ -1,4 +1,5 @@
 import type { IUseCaseAsync } from '@app/nestjs-microservices-tools/usecases';
-import type { ExistingUserDto, SignUpWithLocalCredentialsDto } from '../../../dtos/local-auth';
+import type { SignUpUseCaseRequestDto } from './sign-up-usecase-request.dto';
+import type { SignUpUseCaseResponseDto } from './sign-up-usecase-response.dto';
 
-export interface ISignUpUseCase extends IUseCaseAsync<SignUpWithLocalCredentialsDto, ExistingUserDto> {}
+export interface ISignUpUseCase extends IUseCaseAsync<SignUpUseCaseRequestDto, SignUpUseCaseResponseDto> {}

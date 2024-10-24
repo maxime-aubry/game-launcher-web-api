@@ -1,9 +1,9 @@
-import { Exception } from '@app/nestjs-microservices-tools/exceptions';
 import { type ILoggerService, LoggerService } from '@app/nestjs-microservices-tools/services/logger';
-import { Inject } from '@nestjs/common';
-import type { UserModel } from 'apps/auth/src/domain/models';
-import type { ExistingUserDto, SignUpWithLocalCredentialsDto } from '../../../dtos/local-auth';
+import { BadRequestException, Inject } from '@nestjs/common';
+import { CreateUserModel, type CreatedUserModel, LocalCredentialsModel } from 'apps/auth/src/domain/models';
 import { type IUserService, UserService } from '../../../services/user';
+import type { SignUpUseCaseRequestDto } from './sign-up-usecase-request.dto';
+import { SignUpUseCaseResponseDto } from './sign-up-usecase-response.dto';
 import type { ISignUpUseCase } from './sign-up-usecase.interface';
 
 export class SignUpUseCase implements ISignUpUseCase {
@@ -12,14 +12,29 @@ export class SignUpUseCase implements ISignUpUseCase {
     @Inject(LoggerService) private readonly loggerService: ILoggerService,
   ) {}
 
-  public async executeAsync(request: SignUpWithLocalCredentialsDto): Promise<ExistingUserDto> {
+  public async executeAsync(request?: SignUpUseCaseRequestDto): Promise<SignUpUseCaseResponseDto> {
     try {
-      await this.userService.checkInexistingUserAsync(request.email);
-      const userModel: UserModel = await this.userService.createUserWithLocalCredentialsAsync(request);
-      return this.userService.getExistingUser(userModel);
+      if (!request) throw new BadRequestException('Email and password not provided.');
+      await this.userService.checkInexistingUserWithEmailAsync(request.email);
+      const user: CreateUserModel = this.getUserToCreate(request);
+      const createdUserModel: CreatedUserModel = await this.userService.createUserWithLocalCredentialsAsync(user);
+      const { accessTokenCookie, refreshTokenCookie } = await this.userService.authenticateUser(createdUserModel);
+      const response: SignUpUseCaseResponseDto = new SignUpUseCaseResponseDto(
+        createdUserModel.id,
+        createdUserModel.email,
+        accessTokenCookie,
+        refreshTokenCookie,
+      );
+      return response;
     } catch (e) {
-      if (e instanceof Exception) this.loggerService.error('SignUpUseCase', e.message, e.name);
+      if (e instanceof Error) this.loggerService.error('SignUpUseCase', e.message, e.name);
       throw e;
     }
+  }
+
+  private getUserToCreate(request: SignUpUseCaseRequestDto): CreateUserModel {
+    const credentials: LocalCredentialsModel = new LocalCredentialsModel(request.clearedPassword);
+    const user: CreateUserModel = new CreateUserModel(request.email, credentials);
+    return user;
   }
 }

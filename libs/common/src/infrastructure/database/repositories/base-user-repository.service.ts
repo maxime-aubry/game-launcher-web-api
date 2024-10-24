@@ -1,6 +1,5 @@
 import type { PrismaService } from '@app/nestjs-microservices-tools/database';
-import type { Prisma } from '@prisma/client';
-import type { CreateUserEntity, UserEntity } from '../../../domain/entities';
+import type { CreateUserEntity, UpdateUserEntity, UserEntity } from '../../../domain/entities';
 import type { IBaseUserRepository } from './base-user-repository.interface';
 
 export class BaseUserRepository implements IBaseUserRepository {
@@ -27,7 +26,7 @@ export class BaseUserRepository implements IBaseUserRepository {
     return user;
   }
 
-  public async updateAsync(entity: Prisma.UserUpdateInput, id: string): Promise<UserEntity> {
+  public async updateAsync(entity: UpdateUserEntity, id: string): Promise<UserEntity> {
     const user: UserEntity = await this.prisma.user.update({
       data: entity,
       where: {

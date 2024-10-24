@@ -19,22 +19,6 @@ export class AuthUserRepository extends BaseUserRepository implements IAuthUserR
     return user;
   }
 
-  public async findByEmailOrUsernameAsync(emailOrUsername: string): Promise<UserEntity | null> {
-    const user: UserEntity | null = await this.prisma.user.findFirst({
-      where: {
-        OR: [
-          {
-            email: emailOrUsername,
-          },
-          {
-            username: emailOrUsername,
-          },
-        ],
-      },
-    });
-    return user;
-  }
-
   public async updateLastLogin(id: string): Promise<UserEntity> {
     const user: UserEntity = await this.prisma.user.update({
       where: {

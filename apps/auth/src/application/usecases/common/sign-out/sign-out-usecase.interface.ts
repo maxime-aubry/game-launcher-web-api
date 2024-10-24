@@ -1,4 +1,4 @@
 import type { IUseCase } from '@app/nestjs-microservices-tools/usecases';
-import type { SignOutCookiesDto } from '../../../dtos/common';
+import type { SignOutUseCaseResponseDto } from './sign-out-usecase-response.dto';
 
-export interface ISignOutUseCase extends IUseCase<undefined, SignOutCookiesDto> {}
+export interface ISignOutUseCase extends IUseCase<undefined, SignOutUseCaseResponseDto> {}

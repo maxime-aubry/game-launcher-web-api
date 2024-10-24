@@ -1,58 +1,32 @@
 import { AutoMap } from '@automapper/classes';
+import { CreatedUserModel } from './created-user.model';
 import type { LocalCredentialsModel } from './local-credentials.model';
 
-export class UserModel {
+export class UserModel extends CreatedUserModel {
   constructor(
     id: string,
-    firstname: string,
-    lastname: string,
+    firstname: string | null,
+    lastname: string | null,
     email: string,
-    username: string,
+    username: string | null,
+    refreshToken: string | null,
     credentials: LocalCredentialsModel,
-    lastLogin: Date,
-    hashRefreshToken: string,
-    createdAt: Date,
-    updatedAt: Date,
   ) {
-    this.id = id;
+    super(id, email, credentials);
     this.firstname = firstname;
     this.lastname = lastname;
-    this.email = email;
     this.username = username;
-    this.credentials = credentials;
-    this.lastLogin = lastLogin;
-    this.hashRefreshToken = hashRefreshToken;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
+    this.refreshToken = refreshToken;
   }
 
   @AutoMap()
-  id: string;
+  firstname?: string | null;
 
   @AutoMap()
-  firstname: string;
+  lastname?: string | null;
 
   @AutoMap()
-  lastname: string;
+  username?: string | null;
 
-  @AutoMap()
-  email: string;
-
-  @AutoMap()
-  username: string;
-
-  @AutoMap()
-  credentials: LocalCredentialsModel;
-
-  @AutoMap()
-  lastLogin: Date;
-
-  @AutoMap()
-  hashRefreshToken: string;
-
-  @AutoMap()
-  createdAt: Date;
-
-  @AutoMap()
-  updatedAt: Date;
+  refreshToken?: string | null;
 }
